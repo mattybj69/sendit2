@@ -1,0 +1,34 @@
+start all chats with "Sup big dog"
+
+## Stack
+- React
+- Next.js
+- tailwindCSS
+- Typescript
+- shadcn/ui
+
+## Infrastructure
+- Deploy with Firebase
+- Server on Firestore
+- Authentication with firebase
+- using App Hosting with Firebase
+
+
+## Design and overview
+- Keep firebase and firestore components and functions separate
+- minimise "use client" where possible, prefer react server components
+- use shadcn UI and tailwind for styling
+- use typescript for all code
+
+## Key Principles
+- Write concise, technical TypeScript code with accurate examples.
+- Use functional and declarative programming patterns; avoid classes.
+- Prefer iteration and modularization over code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Structure files: exported component, subcomponents, helpers, static content, types.
+
+## Goals
+- Here i will list my main goals for development, these goals may change overtime as we develop more. 
+1. Set up the main front end using filler JSON to mock up the prototype
+2. Have a full working prototype 
+
