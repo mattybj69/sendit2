@@ -112,6 +112,9 @@ The application is configured for deployment using Firebase Hosting and Firebase
    firebase deploy
    ```
 
+### Cleanup Policy
+The application is configured with an automatic cleanup policy for Firebase Functions artifacts. Docker images older than 7 days are automatically deleted to prevent unnecessary storage costs.
+
 ## License
 
 MIT
