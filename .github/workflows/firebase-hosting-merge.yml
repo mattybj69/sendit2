@@ -26,3 +26,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SENDIT_A9CD9 }}
           channelId: live
           projectId: sendit-a9cd9
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
