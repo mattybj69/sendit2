@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ClimbsHeader } from '../../components/ClimbsHeader';
 import { Spinner } from '../../components/ui/spinner';
 import { getUserClimbsClient } from '@/lib/queries';
 import { Climb } from '@/lib/types';

@@ -7,9 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
 } from "@/components/ui/command"
 import {
@@ -23,7 +21,6 @@ export interface ComboboxProps {
   value?: string
   onValueChange: (value: string) => void
   placeholder?: string
-  emptyText?: string
   className?: string
 }
 
@@ -32,7 +29,6 @@ export function Combobox({
   value,
   onValueChange,
   placeholder = "Select option...",
-  emptyText = "No results found.",
   className,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)

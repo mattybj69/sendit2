@@ -23,10 +23,6 @@ interface Friend {
   name: string;
 }
 
-interface FriendData extends DocumentData {
-  createdAt: any;
-}
-
 interface UserData extends DocumentData {
   email: string;
   name: string;

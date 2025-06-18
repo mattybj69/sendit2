@@ -43,15 +43,15 @@ export function EditAttemptForm({ attempt, isOpen, onClose, onSubmit }: EditAtte
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Attempt #{attempt.index}</DialogTitle>
+          <DialogTitle>Edit Attempt</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              {attempt.date instanceof Date 
+              {attempt.date instanceof Date
                 ? attempt.date.toLocaleDateString()
-                : new Date(attempt.date.seconds * 1000).toLocaleDateString()}
+                : ''}
             </p>
             <Textarea
               value={notes}

@@ -14,21 +14,20 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signUp } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+
     setIsLoading(true);
 
     try {
       await signUp(email, password, name);
       router.push('/climbs');
     } catch (error) {
-      setError("Failed to create account");
+      // Handle error
     } finally {
       setIsLoading(false);
     }
@@ -39,10 +38,6 @@ export default function RegisterPage() {
       <Card className="p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Create Your Account</h1>
         
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>

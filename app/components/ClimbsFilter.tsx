@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Climb, ClimbType } from "@/lib/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { GradeRangeFilter } from "./GradeRangeFilter"
-import { Combobox } from "./ui/combobox"
 import { Button } from "./ui/button"
 import { X } from "lucide-react"
 

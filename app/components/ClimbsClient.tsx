@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Climb, ClimbType } from '@/lib/types';
 import { ClimbCard } from './ClimbCard';
 import { ClimbsFilter } from './ClimbsFilter';
-import { getUserClimbsClient } from '@/lib/queries';
-import { collection, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth';
 
@@ -28,20 +27,6 @@ export function ClimbsClient({ initialClimbs, isReadOnly = false, onAddClimb, on
 
   const handleFiltersChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
-  };
-
-  // Only call parent-provided add/delete
-  const handleAddClimb = async (newClimb: Climb) => {
-    if (onAddClimb) await onAddClimb(newClimb);
-    setFilters({
-      type: "all",
-      gradeRange: [0, 17],
-      location: ""
-    });
-  };
-
-  const handleDeleteClimb = async (id: string) => {
-    if (onDeleteClimb) await onDeleteClimb(id);
   };
 
   const handleCopyClimb = async (id: string) => {
@@ -139,7 +124,7 @@ export function ClimbsClient({ initialClimbs, isReadOnly = false, onAddClimb, on
             key={climb.id}
             climb={climb}
             readOnly={isReadOnly}
-            onDelete={handleDeleteClimb}
+            onDelete={onDeleteClimb}
             onCopy={isReadOnly ? handleCopyClimb : undefined}
             onEditClimb={onEditClimb}
           />
@@ -163,7 +148,7 @@ export function ClimbsClient({ initialClimbs, isReadOnly = false, onAddClimb, on
                   key={climb.id}
                   climb={climb}
                   readOnly={isReadOnly}
-                  onDelete={handleDeleteClimb}
+                  onDelete={onDeleteClimb}
                   onCopy={isReadOnly ? handleCopyClimb : undefined}
                   onEditClimb={onEditClimb}
                 />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { doc, updateDoc, arrayUnion, deleteDoc, deleteField } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, deleteField } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Climb, Link } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
@@ -9,10 +9,7 @@ import { ClimbDetailCard } from './ClimbDetailCard';
 import { AddLinkForm } from './AddLinkForm';
 import { AttemptForm } from './AttemptForm';
 import { cn } from '@/lib/utils';
-import { ExternalLink, Trophy, Check, Copy, Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card"
-
-type ClimbType = "all" | "boulder" | "sport" | "trad"
 
 interface ClimbCardProps {
   climb: Climb;
@@ -37,7 +34,6 @@ export function ClimbCard({ climb, onDelete, readOnly = false, onCopy, onEditCli
   const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
   const [isSendItFormOpen, setIsSendItFormOpen] = useState(false);
   const [localClimb, setLocalClimb] = useState(climb);
-  const [isCopied, setIsCopied] = useState(false);
 
   const handleAddAttempt = async (data: { date: Date; notes: string }) => {
     try {
@@ -194,8 +190,6 @@ export function ClimbCard({ climb, onDelete, readOnly = false, onCopy, onEditCli
   const handleCopy = () => {
     if (onCopy) {
       onCopy(climb.id);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
     }
   };
 

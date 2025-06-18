@@ -8,7 +8,7 @@ import { Climb } from '@/lib/types';
 import { ClimbsClient } from '../components/ClimbsClient';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
-import { collection, addDoc, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { AddClimbDialog } from '../components/AddClimbDialog';
 import { Button } from '../components/ui/button';
@@ -54,7 +54,7 @@ export default function ClimbsPage() {
   const handleAddClimb = async (newClimb: Climb) => {
     if (!user) return;
     const { id, ...climbData } = newClimb;
-    const docRef = await addDoc(collection(db, 'climbs'), { ...climbData, userId: user.uid });
+    await addDoc(collection(db, 'climbs'), { ...climbData, userId: user.uid });
     await fetchClimbs();
   };
 

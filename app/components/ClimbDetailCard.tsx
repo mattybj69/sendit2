@@ -11,11 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AttemptForm } from './AttemptForm';
-import { ExternalLink, Trophy, Trash2, Copy, Plus } from 'lucide-react';
+import { ExternalLink, Trash2, Copy, Plus } from 'lucide-react';
 import { EditAttemptForm } from './EditAttemptForm';
-import { useAuth } from '@/lib/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { EditClimbDialog } from './EditClimbDialog';
 
 interface ClimbDetailCardProps {
@@ -47,7 +44,6 @@ export function ClimbDetailCard({
   onCopyToMyList,
   onEditClimb
 }: ClimbDetailCardProps) {
-  const { user } = useAuth();
   const [isAttemptFormOpen, setIsAttemptFormOpen] = useState(false);
   const [editingAttempt, setEditingAttempt] = useState<Attempt | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -60,29 +56,6 @@ export function ClimbDetailCard({
     if (onEditAttempt && editingAttempt) {
       await onEditAttempt(editingAttempt.id, newNotes);
       setEditingAttempt(null);
-    }
-  };
-
-  const handleCopyToMyList = async () => {
-    if (!user) return;
-    
-    try {
-      const newClimb = {
-        userId: user.uid,
-        name: climb.name,
-        grade: climb.grade,
-        type: climb.type,
-        location: climb.location,
-        attempts: [],
-        links: [],
-        completed: false,
-        createdAt: serverTimestamp(),
-      };
-
-      await addDoc(collection(db, 'climbs'), newClimb);
-      onClose(); // Close the dialog after successful copy
-    } catch (error) {
-      console.error('Error copying climb:', error);
     }
   };
 
@@ -156,7 +129,7 @@ export function ClimbDetailCard({
           </div>
 
           {/* Links Section */}
-          {climb.links?.length > 0 && (
+          {climb.links && climb.links.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">Links</h3>
               <div className="flex flex-wrap gap-3">
@@ -221,7 +194,7 @@ export function ClimbDetailCard({
             <AttemptForm
               isOpen={isAttemptFormOpen}
               onClose={() => setIsAttemptFormOpen(false)}
-              onSubmit={onAddAttempt}
+              onSubmit={onAddAttempt ?? (() => {})}
             />
 
             {!readOnly && editingAttempt && (
