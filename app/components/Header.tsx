@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { FriendsDialog } from './FriendsDialog';
 
 export function Header() {
   const { user, loading, signOut } = useAuth();
@@ -16,13 +17,16 @@ export function Header() {
             SendIt
           </Link>
 
-          <nav className="flex items-center">
+          <nav className="flex items-center gap-2">
             {loading ? (
               <Spinner className="h-5 w-5" />
             ) : user ? (
-              <Button variant="outline" onClick={() => signOut()}>
-                Sign Out
-              </Button>
+              <>
+                <FriendsDialog />
+                <Button variant="outline" onClick={() => signOut()}>
+                  Sign Out
+                </Button>
+              </>
             ) : (
               <div className="flex items-center gap-4">
                 <Link href="/login">

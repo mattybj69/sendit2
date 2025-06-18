@@ -1,9 +1,10 @@
 import { Timestamp } from 'firebase/firestore';
 
+export type ClimbType = "all" | "boulder" | "sport" | "trad"
+
 export interface Attempt {
   id: string;
-  index: number;
-  date: Date | Timestamp;
+  date: Date;
   notes: string;
 }
 
@@ -15,16 +16,17 @@ export interface Link {
 
 export interface Climb {
   id: string;
-  userId: string;
   name: string;
+  type: ClimbType;
   grade: string;
-  type: 'Boulder' | 'Sport' | 'Trad';
   location: string;
   attempts: Attempt[];
-  links: Link[];
-  createdAt: Date | Timestamp;
   completed: boolean;
-  completedAt?: Date | Timestamp;
+  completedAt?: Date;
+  links?: Link[];
+  city?: string;
+  state?: string;
+  country?: string;
 }
 
 export interface User {

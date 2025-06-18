@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
-import { getUserClimbs } from '@/lib/queries';
+import { getUserClimbsClient } from '@/lib/queries';
 import { Climb } from '@/lib/types';
 import { ClimbCard } from './ClimbCard';
 import { AddClimbButton } from './AddClimbButton';
@@ -14,7 +14,7 @@ export function ClimbsList() {
   useEffect(() => {
     async function fetchClimbs() {
       if (!user) return;
-      const climbsData = await getUserClimbs(user.uid);
+      const climbsData = await getUserClimbsClient(user.uid);
       setClimbs(climbsData);
     }
 

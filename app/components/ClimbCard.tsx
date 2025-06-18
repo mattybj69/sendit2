@@ -9,11 +9,17 @@ import { ClimbDetailCard } from './ClimbDetailCard';
 import { AddLinkForm } from './AddLinkForm';
 import { AttemptForm } from './AttemptForm';
 import { cn } from '@/lib/utils';
-import { ExternalLink, Trophy } from 'lucide-react';
+import { ExternalLink, Trophy, Check, Copy, Plus, Trash2 } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card"
+
+type ClimbType = "all" | "boulder" | "sport" | "trad"
 
 interface ClimbCardProps {
   climb: Climb;
-  onDelete: (climbId: string) => void;
+  onDelete?: (id: string) => void;
+  readOnly?: boolean;
+  onCopy?: (id: string) => void;
+  onEditClimb?: (climb: Climb) => void;
 }
 
 const typeColors = {
@@ -22,18 +28,22 @@ const typeColors = {
   Trad: 'bg-emerald-100 text-emerald-700 border-emerald-200'
 } as const;
 
-export function ClimbCard({ climb, onDelete }: ClimbCardProps) {
+function capitalizeType(type: string) {
+  return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+}
+
+export function ClimbCard({ climb, onDelete, readOnly = false, onCopy, onEditClimb }: ClimbCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
   const [isSendItFormOpen, setIsSendItFormOpen] = useState(false);
   const [localClimb, setLocalClimb] = useState(climb);
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleAddAttempt = async (data: { date: Date; notes: string }) => {
     try {
       const attemptId = Math.random().toString(36).substr(2, 9);
       const newAttempt = {
         id: attemptId,
-        index: localClimb.attempts.length + 1,
         ...data
       };
 
@@ -85,7 +95,6 @@ export function ClimbCard({ climb, onDelete }: ClimbCardProps) {
       const attemptId = Math.random().toString(36).substr(2, 9);
       const newAttempt = {
         id: attemptId,
-        index: localClimb.attempts.length + 1,
         date: now,
         notes: `Sent it! 🎉 ${data.notes}`
       };
@@ -135,16 +144,9 @@ export function ClimbCard({ climb, onDelete }: ClimbCardProps) {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      // Delete from Firestore
-      await deleteDoc(doc(db, 'climbs', climb.id));
-      // Close the detail view
-      setIsDetailOpen(false);
-      // Notify parent to update the list
+  const handleDelete = () => {
+    if (onDelete) {
       onDelete(climb.id);
-    } catch (error) {
-      console.error('Error deleting climb:', error);
     }
   };
 
@@ -189,86 +191,75 @@ export function ClimbCard({ climb, onDelete }: ClimbCardProps) {
     setIsDetailOpen(true);
   };
 
+  const handleCopy = () => {
+    if (onCopy) {
+      onCopy(climb.id);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  };
+
   return (
     <>
-      <div 
+      <Card 
         className={cn(
-          "border rounded-lg p-4 hover:bg-accent hover:shadow-sm transition-all cursor-pointer",
-          localClimb.completed && "bg-emerald-50 dark:bg-emerald-950/10"
+          "cursor-pointer transition-all hover:shadow-md",
+          localClimb.completed && "bg-green-50 border-green-500"
         )}
         onClick={handleCardClick}
       >
-        <div className="flex items-center justify-between mb-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold">{localClimb.name}</h3>
-              {localClimb.completed && (
-                <Trophy className="h-4 w-4 text-emerald-500" />
-              )}
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="font-medium">{localClimb.name}</h3>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant="secondary" className="bg-black text-white">
+                  {localClimb.grade}
+                </Badge>
+                <span>•</span>
+                <span>{localClimb.location}</span>
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground">{localClimb.location}</p>
-          </div>
-          <div className="flex items-center gap-2">
             <Badge 
               variant="outline"
-              className={cn(
-                typeColors[localClimb.type],
-                'font-normal'
-              )}
+              className={typeColors[capitalizeType(localClimb.type) as keyof typeof typeColors]}
             >
-              {localClimb.type}
-            </Badge>
-            <Badge variant="secondary">
-              {localClimb.grade}
+              {capitalizeType(localClimb.type)}
             </Badge>
           </div>
-        </div>
-
-        {localClimb.links?.length > 0 && (
-          <div className="flex items-center gap-2">
-            {localClimb.links.map((link) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ExternalLink className="h-3 w-3" />
-                {link.name}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
 
       <ClimbDetailCard
         climb={localClimb}
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
-        onAddAttempt={handleAddAttempt}
-        onAddLink={() => setIsAddLinkOpen(true)}
-        onSendIt={() => setIsSendItFormOpen(true)}
-        onUnsend={handleUnsend}
-        onDelete={handleDelete}
-        onEditAttempt={handleEditAttempt}
+        onAddAttempt={readOnly ? undefined : handleAddAttempt}
+        onAddLink={readOnly ? undefined : () => setIsAddLinkOpen(true)}
+        onSendIt={readOnly ? undefined : () => setIsSendItFormOpen(true)}
+        onUnsend={readOnly ? undefined : handleUnsend}
+        onDelete={readOnly ? undefined : handleDelete}
+        onEditAttempt={readOnly ? undefined : handleEditAttempt}
+        readOnly={readOnly}
+        onCopyToMyList={readOnly && onCopy ? () => handleCopy() : undefined}
+        onEditClimb={onEditClimb}
       />
 
-      <AddLinkForm
-        isOpen={isAddLinkOpen}
-        onClose={() => setIsAddLinkOpen(false)}
-        onSubmit={handleAddLink}
-      />
+      {!readOnly && (
+        <>
+          <AddLinkForm
+            isOpen={isAddLinkOpen}
+            onClose={() => setIsAddLinkOpen(false)}
+            onSubmit={handleAddLink}
+          />
 
-      <AttemptForm
-        isOpen={isSendItFormOpen}
-        onClose={() => setIsSendItFormOpen(false)}
-        onSubmit={(data) => {
-          handleSendIt(data);
-          setIsSendItFormOpen(false);
-        }}
-      />
+          <AttemptForm
+            isOpen={isSendItFormOpen}
+            onClose={() => setIsSendItFormOpen(false)}
+            onSubmit={handleSendIt}
+          />
+        </>
+      )}
     </>
   );
 } 

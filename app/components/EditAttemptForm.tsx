@@ -20,6 +20,8 @@ interface EditAttemptFormProps {
 }
 
 export function EditAttemptForm({ attempt, isOpen, onClose, onSubmit }: EditAttemptFormProps) {
+  if (!attempt) return null;
+
   const [notes, setNotes] = useState(attempt.notes);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
