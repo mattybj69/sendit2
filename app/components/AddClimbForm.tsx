@@ -29,11 +29,11 @@ interface AddClimbFormProps {
   onClimbAdded: (climb: Climb) => void;
 }
 
-const validateGrade = (type: 'Boulder' | 'Sport' | 'Trad', grade: string): boolean => {
-  if (type === 'Boulder') {
+const validateGrade = (type: 'boulder' | 'sport' | 'trad', grade: string): boolean => {
+  if (type === 'boulder') {
     // V grade format (V0-V17)
     return /^V([0-9]|1[0-7])$/.test(grade);
-  } else if (type === 'Sport') {
+  } else if (type === 'sport') {
     // Australian sport grade format (1-35)
     const num = parseInt(grade);
     return !isNaN(num) && num >= 1 && num <= 35;
@@ -46,12 +46,12 @@ export function AddClimbForm({ isOpen, onClose, onClimbAdded }: AddClimbFormProp
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
-  const [type, setType] = useState<'Boulder' | 'Sport' | 'Trad'>('Boulder');
+  const [type, setType] = useState<'boulder' | 'sport' | 'trad'>('boulder');
   const [location, setLocation] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gradeError, setGradeError] = useState<string | null>(null);
 
-  const handleTypeChange = (newType: 'Boulder' | 'Sport' | 'Trad') => {
+  const handleTypeChange = (newType: 'boulder' | 'sport' | 'trad') => {
     setType(newType);
     setGrade(''); // Clear grade when type changes
     setGradeError(null);
@@ -61,7 +61,7 @@ export function AddClimbForm({ isOpen, onClose, onClimbAdded }: AddClimbFormProp
     setGrade(newGrade);
     if (!validateGrade(type, newGrade)) {
       setGradeError(
-        type === 'Boulder' 
+        type === 'boulder' 
           ? 'Please enter a valid V grade (e.g., V0, V1, V2, etc.)'
           : 'Please enter a valid sport grade (1-35)'
       );
@@ -104,7 +104,7 @@ export function AddClimbForm({ isOpen, onClose, onClimbAdded }: AddClimbFormProp
 
       setName('');
       setGrade('');
-      setType('Boulder');
+      setType('boulder');
       setLocation('');
       onClose();
     } catch (error) {
@@ -137,15 +137,15 @@ export function AddClimbForm({ isOpen, onClose, onClimbAdded }: AddClimbFormProp
             <Label htmlFor="type">Type</Label>
             <Select
               value={type}
-              onValueChange={(value: 'Boulder' | 'Sport' | 'Trad') => handleTypeChange(value)}
+              onValueChange={(value: 'boulder' | 'sport' | 'trad') => handleTypeChange(value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Boulder">Boulder</SelectItem>
-                <SelectItem value="Sport">Sport</SelectItem>
-                <SelectItem value="Trad">Trad</SelectItem>
+                <SelectItem value="boulder">Boulder</SelectItem>
+                <SelectItem value="sport">Sport</SelectItem>
+                <SelectItem value="trad">Trad</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -156,7 +156,7 @@ export function AddClimbForm({ isOpen, onClose, onClimbAdded }: AddClimbFormProp
               id="grade"
               value={grade}
               onChange={(e) => handleGradeChange(e.target.value)}
-              placeholder={type === 'Boulder' ? 'V0' : '1'}
+              placeholder={type === 'boulder' ? 'V0' : '1'}
               required
             />
             {gradeError && (
